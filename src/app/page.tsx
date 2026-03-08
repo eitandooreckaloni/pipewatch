@@ -41,12 +41,12 @@ interface Idea {
   id: number
   name: string
   status: 'proposed' | 'active' | 'specced' | 'designed' | 'building' | 'built' | 'developed' | 'qa_pass' | 'qa_fail' | 'deployed' | 'killed' | 'filtered'
-  one_liner: string
-  ranking: Ranking
-  repo_url: string
-  live_url: string
-  developer_output: DeveloperOutput
-  qa_output: QAOutput
+  one_liner?: string
+  ranking?: Ranking
+  repo_url?: string
+  live_url?: string
+  developer_output?: DeveloperOutput
+  qa_output?: QAOutput
 }
 
 interface PipelineData {
@@ -186,8 +186,8 @@ export default function Dashboard() {
         bVal = b.status
         break
       case 'weighted_score':
-        aVal = a.ranking.weighted_score
-        bVal = b.ranking.weighted_score
+        aVal = a.ranking?.weighted_score ?? 0
+        bVal = b.ranking?.weighted_score ?? 0
         break
       default:
         return 0
@@ -318,8 +318,8 @@ export default function Dashboard() {
                       <StatusBadge status={idea.status} />
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-mono">
-                      <span className={`font-semibold ${getScoreColor(idea.ranking.weighted_score)}`}>
-                        {idea.ranking.weighted_score.toFixed(1)}
+                      <span className={`font-semibold ${getScoreColor(idea.ranking?.weighted_score ?? 0)}`}>
+                        {idea.ranking ? idea.ranking.weighted_score.toFixed(1) : '—'}
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
@@ -370,17 +370,19 @@ export default function Dashboard() {
                           </div>
 
                           {/* Ranking Bars */}
-                          <div>
-                            <h4 className="text-sm font-semibold text-gray-900 mb-2">Ranking Breakdown</h4>
-                            <div className="grid grid-cols-2 gap-2">
-                              <RankingBar label="Pain" value={idea.ranking.pain} />
-                              <RankingBar label="Market" value={idea.ranking.market} />
-                              <RankingBar label="Build" value={idea.ranking.buildability} />
-                              <RankingBar label="Moat" value={idea.ranking.moat} />
-                              <RankingBar label="Revenue" value={idea.ranking.revenue} />
-                              <RankingBar label="Viral" value={idea.ranking.virality} />
+                          {idea.ranking && (
+                            <div>
+                              <h4 className="text-sm font-semibold text-gray-900 mb-2">Ranking Breakdown</h4>
+                              <div className="grid grid-cols-2 gap-2">
+                                <RankingBar label="Pain" value={idea.ranking.pain} />
+                                <RankingBar label="Market" value={idea.ranking.market} />
+                                <RankingBar label="Build" value={idea.ranking.buildability} />
+                                <RankingBar label="Moat" value={idea.ranking.moat} />
+                                <RankingBar label="Revenue" value={idea.ranking.revenue} />
+                                <RankingBar label="Viral" value={idea.ranking.virality} />
+                              </div>
                             </div>
-                          </div>
+                          )}
 
                           {/* Build Status */}
                           {idea.developer_output && (
