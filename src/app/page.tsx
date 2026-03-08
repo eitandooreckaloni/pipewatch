@@ -40,7 +40,7 @@ interface QAOutput {
 interface Idea {
   id: number
   name: string
-  status: 'active' | 'specced' | 'designed' | 'building' | 'built' | 'developed' | 'qa_pass' | 'qa_fail' | 'deployed' | 'killed' | 'filtered'
+  status: 'proposed' | 'active' | 'specced' | 'designed' | 'building' | 'built' | 'developed' | 'qa_pass' | 'qa_fail' | 'deployed' | 'killed' | 'filtered'
   one_liner: string
   ranking: Ranking
   repo_url: string
@@ -50,7 +50,8 @@ interface Idea {
 }
 
 interface PipelineData {
-  next_id: number
+  next_id?: number
+  nextId?: number
   ideas: Idea[]
 }
 
@@ -58,6 +59,7 @@ type SortField = 'id' | 'name' | 'status' | 'weighted_score'
 type SortDirection = 'asc' | 'desc'
 
 const STATUS_COLORS = {
+  proposed: 'bg-teal-100 text-teal-800',
   active: 'bg-blue-100 text-blue-800',
   specced: 'bg-indigo-100 text-indigo-800',
   designed: 'bg-purple-100 text-purple-800',
@@ -123,7 +125,6 @@ export default function Dashboard() {
         mode: 'cors',
         headers: {
           'Accept': 'application/json',
-          'Content-Type': 'application/json',
         },
       })
       
@@ -243,7 +244,7 @@ export default function Dashboard() {
     )
   }
 
-  const allStatuses = ['active', 'specced', 'designed', 'building', 'built', 'developed', 'qa_pass', 'qa_fail', 'deployed', 'killed', 'filtered']
+  const allStatuses = ['proposed', 'active', 'specced', 'designed', 'building', 'built', 'developed', 'qa_pass', 'qa_fail', 'deployed', 'killed', 'filtered']
 
   return (
     <div className="space-y-6">
@@ -261,7 +262,7 @@ export default function Dashboard() {
           )}
         </div>
         <div className="text-sm text-gray-500 font-mono">
-          Next ID: {data?.next_id || 'N/A'}
+          Next ID: {data?.next_id ?? data?.nextId ?? 'N/A'}
         </div>
       </div>
 
